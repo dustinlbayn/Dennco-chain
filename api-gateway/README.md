@@ -18,7 +18,15 @@ Returns the wallet balance in wei for a valid EVM address.
 
 ### `GET /contracts`
 
-Returns configured contract addresses from environment variables.
+Returns configured contract addresses and deployment artifact metadata when available.
+
+### `GET /identity/:address`
+
+Reads an identity record from `IdentityRegistry`.
+
+### `GET /assets/:assetId`
+
+Reads an asset record from `AssetRegistry`. The `assetId` must be a 32-byte hex value.
 
 ## Development
 
@@ -32,4 +40,20 @@ npm run dev
 ```bash
 npm run build
 npm start
+```
+
+## Deployment artifact loading
+
+The gateway first looks for contract deployment artifacts at:
+
+```text
+../deployments/<network>/IdentityRegistry.json
+../deployments/<network>/AssetRegistry.json
+```
+
+If artifacts are unavailable, it falls back to environment variables:
+
+```text
+IDENTITY_REGISTRY_ADDRESS=
+ASSET_REGISTRY_ADDRESS=
 ```
