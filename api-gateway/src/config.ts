@@ -1,5 +1,16 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
+import * as dotenv from "dotenv";
+
+dotenv.config({ path: path.resolve(process.cwd(), "..", ".env") });
+
+type RuntimeConfig = {
+  host: string;
+  port: number;
+  rpcUrl: string;
+  chainId: number;
+  networkName: string;
+};
 
 export type ContractDeployment = {
   contractName: string;
@@ -10,7 +21,7 @@ export type ContractDeployment = {
   deployedAt?: string;
 };
 
-export const config = {
+export const config: RuntimeConfig = {
   host: process.env.API_GATEWAY_HOST || "0.0.0.0",
   port: Number(process.env.API_GATEWAY_PORT || 8080),
   rpcUrl: process.env.BESU_RPC_URL || "http://127.0.0.1:8545",
