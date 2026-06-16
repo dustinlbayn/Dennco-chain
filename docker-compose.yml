@@ -1,18 +1,37 @@
 services:
-  besu-node-1:
+  besu-validator-1:
     image: hyperledger/besu:latest
-    container_name: dennco-chain-besu-node-1
+    container_name: dennco-chain-besu-validator-1
     restart: unless-stopped
     command:
       - --config-file=/config/config.toml
     volumes:
-      - ./config/besu/node1:/config:ro
-      - besu-node-1-data:/opt/besu/data
+      - ./config/besu/validator1:/config:ro
+      - besu-validator-1-data:/opt/besu/data
     ports:
       - "8545:8545"
       - "8546:8546"
       - "30303:30303/tcp"
       - "30303:30303/udp"
+    networks:
+      - dennco-chain
+
+  besu-transaction-1:
+    image: hyperledger/besu:latest
+    container_name: dennco-chain-besu-transaction-1
+    restart: unless-stopped
+    depends_on:
+      - besu-validator-1
+    command:
+      - --config-file=/config/config.toml
+    volumes:
+      - ./config/besu/transaction1:/config:ro
+      - besu-transaction-1-data:/opt/besu/data
+    ports:
+      - "8555:8545"
+      - "8556:8546"
+      - "30304:30303/tcp"
+      - "30304:30303/udp"
     networks:
       - dennco-chain
 
@@ -22,11 +41,11 @@ services:
     container_name: dennco-chain-api-gateway
     restart: unless-stopped
     depends_on:
-      - besu-node-1
+      - besu-transaction-1
     env_file:
       - .env
     environment:
-      BESU_RPC_URL: http://besu-node-1:8545
+      BESU_RPC_URL: http://besu-transaction-1:8545
       API_GATEWAY_PORT: 8080
     ports:
       - "8080:8080"
@@ -38,4 +57,5 @@ networks:
     name: dennco-chain
 
 volumes:
-  besu-node-1-data:
+  besu-validator-1-data:
+  besu-transaction-1-data:
