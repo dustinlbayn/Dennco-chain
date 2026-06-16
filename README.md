@@ -2,6 +2,8 @@
 
 Dennco Chain is the enterprise blockchain platform for Dennco Holding Company. The platform is designed around a permissioned Hyperledger Besu network with smart contracts for identity, asset registration, API access, wallet operations, and explorer integrations.
 
+Dennco Chain is one technology asset inside Dennco's broader infrastructure platform. The capital strategy for the company should be centered on raising company capital for Dennco Holding Company or a dedicated subsidiary, not selling a speculative coin or public investment token.
+
 ## Platform goals
 
 - Private / permissioned enterprise blockchain network
@@ -12,6 +14,7 @@ Dennco Chain is the enterprise blockchain platform for Dennco Holding Company. T
 - Wallet service foundation
 - Block explorer integration path
 - Production-oriented documentation and deployment layout
+- Support for Dennco's broader company-capital and infrastructure strategy
 
 ## Repository layout
 
@@ -22,13 +25,19 @@ Dennco Chain is the enterprise blockchain platform for Dennco Holding Company. T
 ├── config/               # Besu network and node configuration
 ├── contracts/            # Solidity contracts, tests, and deployment scripts
 ├── deployments/          # Generated deployment artifact documentation
-├── docs/                 # Architecture and operating documentation
+├── docs/                 # Architecture, roadmap, and capital strategy documentation
 ├── explorer/             # Explorer integration notes and future service config
 ├── scripts/              # Local setup and operations scripts
 ├── wallet/               # Wallet service/app placeholder
 ├── docker-compose.yml    # Local Dennco Chain development network
 └── README.md
 ```
+
+## Capital positioning
+
+Dennco is raising company capital to build an integrated technology infrastructure platform. Dennco Chain supports that larger platform through enterprise identity, asset registration, secure business records, document verification, API access, wallet infrastructure, and future digital operating systems.
+
+See [`docs/CAPITAL_STRATEGY.md`](docs/CAPITAL_STRATEGY.md) for the company capital strategy.
 
 ## Quick start
 
@@ -80,4 +89,4 @@ npm run dev
 
 ## Current status
 
-Milestone 1 is underway. The repository now includes Besu configuration, identity and asset registry contracts, contract tests, deployment artifact output, CI, a TypeScript API gateway starter, and documentation for the enterprise architecture.
+Milestone 1 is underway. The repository now includes Besu configuration, identity and asset registry contracts, contract tests, deployment artifact output, CI, a TypeScript API gateway starter, capital strategy documentation, and documentation for the enterprise architecture.
