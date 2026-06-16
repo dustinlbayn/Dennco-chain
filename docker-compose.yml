@@ -1,0 +1,41 @@
+services:
+  besu-node-1:
+    image: hyperledger/besu:latest
+    container_name: dennco-chain-besu-node-1
+    restart: unless-stopped
+    command:
+      - --config-file=/config/config.toml
+    volumes:
+      - ./config/besu/node1:/config:ro
+      - besu-node-1-data:/opt/besu/data
+    ports:
+      - "8545:8545"
+      - "8546:8546"
+      - "30303:30303/tcp"
+      - "30303:30303/udp"
+    networks:
+      - dennco-chain
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+    container_name: dennco-chain-api-gateway
+    restart: unless-stopped
+    depends_on:
+      - besu-node-1
+    env_file:
+      - .env
+    environment:
+      BESU_RPC_URL: http://besu-node-1:8545
+      API_GATEWAY_PORT: 8080
+    ports:
+      - "8080:8080"
+    networks:
+      - dennco-chain
+
+networks:
+  dennco-chain:
+    name: dennco-chain
+
+volumes:
+  besu-node-1-data:
