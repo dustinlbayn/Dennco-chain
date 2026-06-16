@@ -1,0 +1,34 @@
+data-path="/opt/besu/data"
+genesis-file="/config/genesis.json"
+
+# Network
+network-id=20260616
+sync-mode="FULL"
+
+# P2P
+p2p-host="0.0.0.0"
+p2p-port=30303
+max-peers=25
+
+# JSON-RPC for local development only
+rpc-http-enabled=true
+rpc-http-host="0.0.0.0"
+rpc-http-port=8545
+rpc-http-api=["ETH","NET","WEB3","ADMIN","CLIQUE","TXPOOL"]
+rpc-http-cors-origins=["*"]
+rpc-http-authentication-enabled=false
+
+# WebSocket for local development only
+rpc-ws-enabled=true
+rpc-ws-host="0.0.0.0"
+rpc-ws-port=8546
+rpc-ws-api=["ETH","NET","WEB3"]
+
+# Local validator/block producer
+miner-enabled=true
+miner-coinbase="0x0000000000000000000000000000000000000000"
+min-gas-price=0
+
+# Local development security posture. Harden before production.
+host-allowlist=["*"]
+logging="INFO"
