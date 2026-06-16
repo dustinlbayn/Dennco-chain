@@ -3,11 +3,8 @@ import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
 import { JsonRpcProvider, isAddress } from "ethers";
 import { z } from "zod";
-import * as dotenv from "dotenv";
 import { config, loadContractAddress, loadDeployment } from "./config";
 import { requireContract } from "./contracts";
-
-dotenv.config({ path: "../.env" });
 
 const provider = new JsonRpcProvider(config.rpcUrl, config.chainId);
 
