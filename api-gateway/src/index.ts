@@ -4,13 +4,12 @@ import helmet from "@fastify/helmet";
 import { JsonRpcProvider, isAddress } from "ethers";
 import { z } from "zod";
 import * as dotenv from "dotenv";
+import { config, loadContractAddress, loadDeployment } from "./config";
+import { requireContract } from "./contracts";
 
 dotenv.config({ path: "../.env" });
 
-const host = process.env.API_GATEWAY_HOST || "0.0.0.0";
-const port = Number(process.env.API_GATEWAY_PORT || 8080);
-const rpcUrl = process.env.BESU_RPC_URL || "http://127.0.0.1:8545";
-const provider = new JsonRpcProvider(rpcUrl, Number(process.env.CHAIN_ID || 20260616));
+const provider = new JsonRpcProvider(config.rpcUrl, config.chainId);
 
 const app = Fastify({
   logger: true
@@ -25,7 +24,7 @@ app.get("/health", async () => {
   return {
     service: "dennco-chain-api-gateway",
     status: "ok",
-    rpcUrl
+    rpcUrl: config.rpcUrl
   };
 });
 
@@ -38,7 +37,7 @@ app.get("/chain/status", async () => {
   return {
     chainId: network.chainId.toString(),
     blockNumber,
-    rpcUrl
+    rpcUrl: config.rpcUrl
   };
 });
 
@@ -58,8 +57,51 @@ app.get("/wallet/:address/balance", async (request, reply) => {
 
 app.get("/contracts", async () => {
   return {
-    identityRegistry: process.env.IDENTITY_REGISTRY_ADDRESS || null,
-    assetRegistry: process.env.ASSET_REGISTRY_ADDRESS || null
+    network: config.networkName,
+    identityRegistry: loadContractAddress("IdentityRegistry", "IDENTITY_REGISTRY_ADDRESS"),
+    assetRegistry: loadContractAddress("AssetRegistry", "ASSET_REGISTRY_ADDRESS"),
+    deployments: {
+      identityRegistry: loadDeployment("IdentityRegistry"),
+      assetRegistry: loadDeployment("AssetRegistry")
+    }
+  };
+});
+
+app.get("/identity/:address", async (request, reply) => {
+  const params = z.object({ address: z.string() }).parse(request.params);
+
+  if (!isAddress(params.address)) {
+    return reply.code(400).send({ error: "Invalid identity address." });
+  }
+
+  const registry = requireContract(provider, "IdentityRegistry");
+  const identity = await registry.getIdentity(params.address);
+  const isActive = await registry.isActive(params.address);
+
+  return {
+    account: identity.account,
+    legalName: identity.legalName,
+    metadataURI: identity.metadataURI,
+    status: Number(identity.status),
+    createdAt: identity.createdAt.toString(),
+    updatedAt: identity.updatedAt.toString(),
+    isActive
+  };
+});
+
+app.get("/assets/:assetId", async (request) => {
+  const params = z.object({ assetId: z.string().regex(/^0x[a-fA-F0-9]{64}$/) }).parse(request.params);
+  const registry = requireContract(provider, "AssetRegistry");
+  const asset = await registry.getAsset(params.assetId);
+
+  return {
+    assetId: asset.assetId,
+    owner: asset.owner,
+    assetType: asset.assetType,
+    metadataURI: asset.metadataURI,
+    status: Number(asset.status),
+    createdAt: asset.createdAt.toString(),
+    updatedAt: asset.updatedAt.toString()
   };
 });
 
@@ -71,4 +113,4 @@ app.setErrorHandler((error, _request, reply) => {
   });
 });
 
-await app.listen({ host, port });
+await app.listen({ host: config.host, port: config.port });
