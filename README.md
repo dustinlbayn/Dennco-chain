@@ -8,6 +8,7 @@ Dennco Chain is one technology asset inside Dennco's broader infrastructure plat
 
 - Private / permissioned enterprise blockchain network
 - Hyperledger Besu node stack
+- Dedicated transaction node for application submissions
 - Identity registry smart contract
 - Asset registry smart contract
 - API gateway for internal and external applications
@@ -22,7 +23,7 @@ Dennco Chain is one technology asset inside Dennco's broader infrastructure plat
 .
 ├── .github/workflows/    # CI checks for contracts and gateway
 ├── api-gateway/          # REST API service for blockchain operations
-├── config/               # Besu network and node configuration
+├── config/               # Besu validator and transaction node configuration
 ├── contracts/            # Solidity contracts, tests, and deployment scripts
 ├── deployments/          # Generated deployment artifact documentation
 ├── docs/                 # Architecture, roadmap, and capital strategy documentation
@@ -35,9 +36,15 @@ Dennco Chain is one technology asset inside Dennco's broader infrastructure plat
 
 ## Capital positioning
 
-Dennco is raising company capital to build an integrated technology infrastructure platform. Dennco Chain supports that larger platform through enterprise identity, asset registration, secure business records, document verification, API access, wallet infrastructure, and future digital operating systems.
+Dennco is raising company capital to build an integrated technology infrastructure platform. Dennco Chain supports that larger platform through enterprise identity, asset registration, secure records, document verification, API access, wallet infrastructure, and future digital operating systems.
 
 See [`docs/CAPITAL_STRATEGY.md`](docs/CAPITAL_STRATEGY.md) for the company capital strategy.
+
+## Transaction node
+
+Dennco Chain includes a dedicated non-validator transaction node for application-facing blockchain traffic. Applications and the API Gateway should use the transaction node instead of sending application traffic directly to validator nodes.
+
+See [`docs/TRANSACTION_NODE.md`](docs/TRANSACTION_NODE.md) for the transaction node architecture.
 
 ## Quick start
 
@@ -84,9 +91,11 @@ npm run dev
 ## Network defaults
 
 - Chain ID: `20260616`
-- Besu RPC: `http://localhost:8545`
+- Validator RPC: `http://localhost:8545`
+- Transaction RPC: `http://localhost:8555`
+- Transaction WS: `ws://localhost:8556`
 - API Gateway: `http://localhost:8080`
 
 ## Current status
 
-Milestone 1 is underway. The repository now includes Besu configuration, identity and asset registry contracts, contract tests, deployment artifact output, CI, a TypeScript API gateway starter, capital strategy documentation, and documentation for the enterprise architecture.
+Milestone 1 is underway. The repository now includes Besu validator and transaction node configuration, identity and asset registry contracts, contract tests, deployment artifact output, CI, a TypeScript API gateway starter, capital strategy documentation, and documentation for the enterprise architecture.
